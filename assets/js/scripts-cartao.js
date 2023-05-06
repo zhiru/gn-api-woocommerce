@@ -58,8 +58,9 @@ jQuery(document).ready(function ($) {
     // Buscar Parcelas
     jQuery("#gn_cartao_number").keyup(function () {
 
-        let total = document.querySelector("#order_review > table > tfoot > tr.order-total > td > strong > span > bdi").innerHTML.replace('<span class="woocommerce-Price-currencySymbol">R$</span>', '').replaceAll(',', '').replaceAll('.', '').replaceAll('&nbsp;', '');
-        console.log(total);
+        let total = document.querySelector("#gn_payment_total").value;
+            total = parseInt(total);
+            total = total * 100;
 
         if (jQuery("#gn_cartao_number").val().length >= 19) {
 
