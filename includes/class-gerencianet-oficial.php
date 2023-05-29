@@ -214,18 +214,30 @@ class Gerencianet_Oficial {
 			}
 		}
 
-		if ( isset( WC()->cart->subtotal ) && ( ( WC()->cart->subtotal + $shippingCost ) < 5 ) ) {
+		global $wp;
+		$cartWoo = WC()->cart;
+		$subtotal = 0;
+		$subtotal = $cartWoo->subtotal;
+
+
+		if ( isset($wp->query_vars['order-pay']) && absint($wp->query_vars['order-pay']) > 0 ) {
+		    $order_id = absint($wp->query_vars['order-pay']); // The order ID
+		    $order    = wc_get_order( $order_id ); // Get the WC_Order Object instance
+		    $subtotal = $order->get_subtotal();
+		}
+
+		if (($subtotal + $shippingCost) < 5) {
 			wc_clear_notices();
-			if ( $boletoEnabled == 'yes' && $cardEnabled == 'yes' ) {
-				wc_add_notice( 'O pagamento via Boleto ou Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice' );
-				unset( $available_gateways[ GERENCIANET_BOLETO_ID ] );
-				unset( $available_gateways[ GERENCIANET_CARTAO_ID ] );
-			} elseif ( $boletoEnabled == 'yes' ) {
-				wc_add_notice( 'O pagamento via Boleto só está disponível em pedidos acima de R$5,00', 'notice' );
-				unset( $available_gateways[ GERENCIANET_BOLETO_ID ] );
-			} elseif ( $cardEnabled == 'yes' ) {
-				wc_add_notice( 'O pagamento via Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice' );
-				unset( $available_gateways[ GERENCIANET_CARTAO_ID ] );
+			if ($boletoEnabled == 'yes' && $cardEnabled == 'yes') {
+				wc_add_notice('O pagamento via Boleto ou Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice');
+				unset($available_gateways[GERENCIANET_BOLETO_ID]);
+				unset($available_gateways[GERENCIANET_CARTAO_ID]);
+			} elseif ($boletoEnabled == 'yes') {
+				wc_add_notice('O pagamento via Boleto só está disponível em pedidos acima de R$5,00', 'notice');
+				unset($available_gateways[GERENCIANET_BOLETO_ID]);
+			} elseif ($cardEnabled == 'yes') {
+				wc_add_notice('O pagamento via Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice');
+				unset($available_gateways[GERENCIANET_CARTAO_ID]);
 			}
 		}
 
